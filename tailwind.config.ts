@@ -14,24 +14,27 @@ export default {
     },
     extend: {
       colors: {
-        // Nova paleta de cores para o evento
-        "brand-background": "#f5e1ce", // Bege Claro (Fundo da página)
-        "brand-card": "#ffffff",      // Branco (Fundo do formulário)
-        "brand-primary": "#7a5c3c",   // Marrom Escuro (Títulos e Botão)
-        "brand-secondary": "#b08e6b", // Marrom Médio (Textos de apoio)
-        "brand-accent": "#e8c39e",    // Bege Médio (Bordas / detalhes)
+        "brand-background": "#f5e1ce",
+        "brand-card": "#ffffff",
+        "brand-primary": "#7a5c3c",
+        "brand-secondary": "#b08e6b",
+        "brand-accent": "#e8c39e",
 
-        // Cores originais do tema (mantidas)
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        
+        // CORREÇÃO 3: Anel de foco agora usa a cor da marca
+        ring: "#b08e6b", // Marrom Médio para o contorno de foco
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // CORREÇÃO 3: Cor primária agora usa a cor da marca, removendo o roxo
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-          glow: "hsl(var(--primary-glow))",
+          DEFAULT: "#7a5c3c",       // Marrom Escuro
+          foreground: "#ffffff",  // Branco
         },
+
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
