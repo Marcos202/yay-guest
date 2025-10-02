@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, User, Calendar, MapPin } from "lucide-react";
-import eventBanner from "@/assets/event-banner.jpg";
+import { Check, User, Calendar, MapPin, LogIn } from "lucide-react";
 
 interface Guest {
   nome_completo: string;
@@ -16,21 +16,23 @@ interface Guest {
 }
 
 const Index = () => {
-  const [numGuests, setNumGuests] = useState<number>(0);
-  const [guests, setGuests] = useState<Guest[]>([]);
+  // CORREÇÃO 1: Formulário inicia com 1 convidado pré-selecionado.
+  const [numGuests, setNumGuests] = useState<number>(1);
+  const [guests, setGuests] = useState<Guest[]>([{ nome_completo: "", idade: "", whatsapp: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleNumGuestsChange = (value: string) => {
     const num = parseInt(value);
     setNumGuests(num);
-    setGuests(
-      Array.from({ length: num }, () => ({
-        nome_completo: "",
-        idade: "",
-        whatsapp: "",
-      }))
-    );
+    // Atualiza a lista de convidados, mantendo os dados já preenchidos
+    setGuests((currentGuests) => {
+      const newGuests = [...currentGuests];
+      while (newGuests.length < num) {
+        newGuests.push({ nome_completo: "", idade: "", whatsapp: "" });
+      }
+      return newGuests.slice(0, num);
+    });
   };
 
   const handleGuestChange = (index: number, field: keyof Guest, value: string) => {
@@ -40,27 +42,28 @@ const Index = () => {
   };
 
   const formatWhatsApp = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 2) return numbers;
-    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    if (numbers.length <= 11)
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2")
+      .slice(0, 15);
   };
 
   const isFormValid = () => {
+    if (guests.length === 0) return false;
     return guests.every(
       (guest) =>
-        guest.nome_completo.trim() !== "" &&
-        guest.idade !== "" &&
+        guest.nome_completo.trim().length >= 3 &&
+        guest.idade.trim() !== "" &&
         parseInt(guest.idade) > 0 &&
-        guest.whatsapp.replace(/\D/g, "").length === 11
+        guest.whatsapp.replace(/\D/g, "").length >= 10 // Aceita 10 ou 11 dígitos
     );
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!isFormValid()) {
-      toast.error("Por favor, preencha todos os campos corretamente");
+      toast.error("Por favor, preencha todos os campos corretamente.");
       return;
     }
 
@@ -74,18 +77,11 @@ const Index = () => {
       }));
 
       const { error } = await supabase.from("convidados").insert(guestsData);
-
       if (error) throw error;
 
       setIsSuccess(true);
       toast.success("Presença confirmada com sucesso! Aguardamos você no evento.");
-      
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setNumGuests(0);
-        setGuests([]);
-        setIsSuccess(false);
-      }, 3000);
+
     } catch (error) {
       console.error("Erro ao confirmar presença:", error);
       toast.error("Erro ao confirmar presença. Tente novamente.");
@@ -94,57 +90,86 @@ const Index = () => {
     }
   };
 
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen bg-brand-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-lg shadow-2xl bg-brand-card">
+          <CardContent className="flex flex-col items-center justify-center py-16 px-6 space-y-6">
+            <div className="h-24 w-24 rounded-full bg-green-100 flex items-center justify-center">
+              <Check className="h-12 w-12 text-green-600" />
+            </div>
+            <div className="text-center space-y-2">
+              <h2 className="text-3xl md:text-4xl font-bold text-brand-primary">
+                Presença Confirmada!
+              </h2>
+              <p className="text-lg text-brand-secondary">
+                Obrigado por confirmar. Aguardamos você no evento!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
+    <div className="min-h-screen bg-brand-background">
+      <Link to="/auth" aria-label="Painel do Administrador">
+        <Button 
+          variant="ghost" 
+          className="absolute top-4 right-4 z-20 gap-2 text-white bg-black/20 backdrop-blur-sm hover:bg-white/20 hover:text-white"
+        >
+          <LogIn className="h-4 w-4" />
+          <span className="hidden sm:inline">Admin</span>
+        </Button>
+      </Link>
+
       {/* Banner do Evento */}
-      <div className="relative w-full h-64 md:h-96 overflow-hidden">
-        <img
-          src={eventBanner}
-          alt="Banner do Evento"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground drop-shadow-lg">
+      <header
+        className="relative w-full h-80 md:h-96 bg-cover bg-center flex flex-col items-center justify-center text-white text-center p-4"
+        style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-1152-x-768-px.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+        <div className="relative z-10 space-y-4">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight drop-shadow-md">
             Confirmação de Presença
           </h1>
-          <div className="flex flex-wrap gap-4 mt-4 text-primary-foreground/90">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-x-6 gap-y-2 text-lg opacity-90">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
-              <span className="text-sm md:text-base">Em Breve</span>
+              <span>25 e 26 de Outubro</span>
             </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              <span className="text-sm md:text-base">Local a Confirmar</span>
+            <div className="flex items-center gap-2 max-w-md">
+              <MapPin className="h-5 w-5 flex-shrink-0" />
+              <span>Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Formulário */}
-      <div className="container max-w-4xl mx-auto px-4 py-12">
-        {!isSuccess ? (
-          <Card className="shadow-elegant bg-gradient-card border-none">
-            <CardHeader className="text-center space-y-2">
-              <CardTitle className="text-3xl md:text-4xl bg-gradient-primary bg-clip-text text-transparent">
-                Confirme sua Presença
-              </CardTitle>
-              <CardDescription className="text-base md:text-lg">
-                Preencha os dados de todos os convidados que irão comparecer
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              {/* Seleção de Número de Convidados */}
+      <main className="container max-w-3xl mx-auto px-4 pb-12 -mt-20 relative z-10">
+        <Card className="shadow-2xl bg-brand-card border-none">
+          <CardHeader className="text-center space-y-2">
+            <CardTitle className="text-3xl md:text-4xl text-brand-primary">
+              Confirme sua Presença
+            </CardTitle>
+            <CardDescription className="text-base md:text-lg text-brand-secondary">
+              Preencha os dados de todos os convidados que irão comparecer
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
-                <Label htmlFor="num-guests" className="text-lg font-semibold">
+                <Label htmlFor="num-guests" className="text-base font-semibold text-brand-secondary">
                   Quantas pessoas irão comparecer?
                 </Label>
-                <Select onValueChange={handleNumGuestsChange}>
-                  <SelectTrigger id="num-guests" className="h-12 text-lg">
-                    <SelectValue placeholder="Selecione o número de convidados" />
+                <Select onValueChange={handleNumGuestsChange} value={numGuests.toString()}>
+                  <SelectTrigger id="num-guests" className="h-12 text-base">
+                    <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    {[1, 2, 3, 4, 5].map((num) => (
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                       <SelectItem key={num} value={num.toString()}>
                         {num} {num === 1 ? "pessoa" : "pessoas"}
                       </SelectItem>
@@ -153,102 +178,40 @@ const Index = () => {
                 </Select>
               </div>
 
-              {/* Formulários Dinâmicos */}
-              {numGuests > 0 && (
-                <div className="space-y-6">
-                  {guests.map((guest, index) => (
-                    <Card
-                      key={index}
-                      className="p-6 space-y-4 shadow-card hover:shadow-glow transition-all duration-300 border-primary/20"
-                    >
-                      <div className="flex items-center gap-2 mb-4">
-                        <User className="h-5 w-5 text-primary" />
-                        <h3 className="text-xl font-semibold text-primary">
-                          Convidado {index + 1}
-                        </h3>
-                      </div>
-
-                      <div className="space-y-2">
+              <div className="space-y-6">
+                {guests.map((guest, index) => (
+                  <div key={index} className="border-t border-brand-accent/50 pt-6 space-y-4 animate-in fade-in-50 duration-500">
+                    <h3 className="text-lg font-semibold text-brand-primary flex items-center gap-2">
+                      <User className="h-5 w-5" />
+                      Convidado {index + 1}
+                    </h3>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
                         <Label htmlFor={`nome-${index}`}>Nome Completo *</Label>
-                        <Input
-                          id={`nome-${index}`}
-                          placeholder="Digite o nome completo"
-                          value={guest.nome_completo}
-                          onChange={(e) =>
-                            handleGuestChange(index, "nome_completo", e.target.value)
-                          }
-                          className="h-11"
-                          required
-                        />
+                        <Input id={`nome-${index}`} value={guest.nome_completo} onChange={(e) => handleGuestChange(index, "nome_completo", e.target.value)} className="h-11" required />
                       </div>
-
-                      <div className="space-y-2">
+                      <div className="space-y-1.5">
                         <Label htmlFor={`idade-${index}`}>Idade *</Label>
-                        <Input
-                          id={`idade-${index}`}
-                          type="number"
-                          placeholder="Digite a idade"
-                          value={guest.idade}
-                          onChange={(e) =>
-                            handleGuestChange(index, "idade", e.target.value)
-                          }
-                          className="h-11"
-                          min="1"
-                          required
-                        />
+                        <Input id={`idade-${index}`} type="number" value={guest.idade} onChange={(e) => handleGuestChange(index, "idade", e.target.value)} className="h-11" min="1" required />
                       </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor={`whatsapp-${index}`}>WhatsApp *</Label>
+                      <Input id={`whatsapp-${index}`} type="tel" placeholder="(00) 00000-0000" value={guest.whatsapp} onChange={(e) => handleGuestChange(index, "whatsapp", formatWhatsApp(e.target.value))} className="h-11" required />
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor={`whatsapp-${index}`}>WhatsApp *</Label>
-                        <Input
-                          id={`whatsapp-${index}`}
-                          type="tel"
-                          placeholder="(00) 00000-0000"
-                          value={guest.whatsapp}
-                          onChange={(e) =>
-                            handleGuestChange(
-                              index,
-                              "whatsapp",
-                              formatWhatsApp(e.target.value)
-                            )
-                          }
-                          className="h-11"
-                          required
-                        />
-                      </div>
-                    </Card>
-                  ))}
-
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={!isFormValid() || isSubmitting}
-                    className="w-full h-14 text-lg font-semibold shadow-glow hover:shadow-elegant transition-all duration-300"
-                    size="lg"
-                  >
-                    {isSubmitting ? "Enviando..." : "Enviar Confirmação"}
-                  </Button>
-                </div>
+              {numGuests > 0 && (
+                <Button type="submit" disabled={!isFormValid() || isSubmitting} className="w-full h-14 text-lg font-semibold bg-brand-primary text-white hover:bg-brand-primary/90" size="lg">
+                  {isSubmitting ? "Enviando..." : "Enviar Confirmação"}
+                </Button>
               )}
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="shadow-elegant bg-gradient-card border-none">
-            <CardContent className="flex flex-col items-center justify-center py-16 space-y-6">
-              <div className="h-24 w-24 rounded-full bg-success/20 flex items-center justify-center">
-                <Check className="h-12 w-12 text-success" />
-              </div>
-              <div className="text-center space-y-2">
-                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Presença Confirmada!
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  Aguardamos você no evento. Até breve!
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+            </form>
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 };
