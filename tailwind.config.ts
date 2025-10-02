@@ -14,6 +14,14 @@ export default {
     },
     extend: {
       colors: {
+        // Nova paleta de cores para o evento
+        "brand-background": "#f5e1ce", // Bege Claro (Fundo da página)
+        "brand-card": "#ffffff",      // Branco (Fundo do formulário)
+        "brand-primary": "#7a5c3c",   // Marrom Escuro (Títulos e Botão)
+        "brand-secondary": "#b08e6b", // Marrom Médio (Textos de apoio)
+        "brand-accent": "#e8c39e",    // Bege Médio (Bordas / detalhes)
+
+        // Cores originais do tema (mantidas)
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -72,22 +80,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
-        },
-        "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
-        },
+        "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
+        "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
