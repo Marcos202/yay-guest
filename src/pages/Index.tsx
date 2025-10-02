@@ -121,20 +121,17 @@ const Index = () => {
         </Button>
       </Link>
 
-      {/* Container principal: tela cheia no mobile, centralizado e com padding no desktop */}
       <div className="container max-w-3xl mx-auto sm:py-8 md:py-12 px-0 sm:px-4">
         
-        {/* CORREÇÃO 1: Banner com largura do formulário no desktop e tela cheia no mobile */}
+        {/* CORREÇÃO: Banner agora usa bg-cover para preencher o espaço, com altura ajustada */}
         <header
-          className="relative w-full h-56 md:h-72 bg-contain bg-center bg-no-repeat sm:rounded-t-lg bg-brand-accent/50"
+          className="relative w-full h-64 md:h-80 bg-cover bg-center sm:rounded-t-lg"
           style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
           aria-label="Banner do Evento"
         />
 
-        {/* Card unificado para informações e formulário */}
         <Card className="shadow-2xl bg-brand-card border-none rounded-none sm:rounded-b-lg">
           
-          {/* CORREÇÃO 2: Informações com fontes e ícones menores */}
           <section className="text-center py-6 border-b border-brand-accent/50">
             <div className="flex flex-col items-center gap-y-2 text-brand-secondary">
               <div className="flex items-center gap-2">
@@ -211,7 +208,6 @@ const Index = () => {
         </Card>
       </div>
       
-      {/* CORREÇÃO 3: Rodapé com novo texto */}
       <footer className="text-center py-8 px-4">
         <p className="text-sm text-brand-secondary/80">
           Sistema desenvolvido por Madala
