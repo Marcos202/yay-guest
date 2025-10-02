@@ -121,30 +121,34 @@ const Index = () => {
         </Button>
       </Link>
 
-      {/* CORREÇÃO 1: Banner agora usa bg-contain para mostrar a imagem inteira */}
-      <header
-        className="relative w-full h-64 md:h-80 bg-contain bg-center bg-no-repeat bg-brand-accent/50"
-        style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
-        aria-label="Banner do Evento"
-      />
-      
-      {/* CORREÇÃO 2: Endereço agora fica em uma única linha */}
-      <section className="container mx-auto text-center py-8 px-4">
-        <div className="flex flex-col items-center gap-y-2 text-brand-secondary">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            <span className="text-sm md:text-base">25 e 26 de Outubro</span>
-          </div>
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <MapPin className="h-5 w-5 flex-shrink-0" />
-            <span className="text-sm md:text-base">Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
-          </div>
-        </div>
-      </section>
+      {/* Container principal: tela cheia no mobile, centralizado e com padding no desktop */}
+      <div className="container max-w-3xl mx-auto sm:py-8 md:py-12 px-0 sm:px-4">
+        
+        {/* CORREÇÃO 1: Banner com largura do formulário no desktop e tela cheia no mobile */}
+        <header
+          className="relative w-full h-56 md:h-72 bg-contain bg-center bg-no-repeat sm:rounded-t-lg bg-brand-accent/50"
+          style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
+          aria-label="Banner do Evento"
+        />
 
-      <main className="container max-w-3xl mx-auto px-4 pb-12">
-        <Card className="shadow-2xl bg-brand-card border-none">
-          <CardHeader className="text-center space-y-2">
+        {/* Card unificado para informações e formulário */}
+        <Card className="shadow-2xl bg-brand-card border-none rounded-none sm:rounded-b-lg">
+          
+          {/* CORREÇÃO 2: Informações com fontes e ícones menores */}
+          <section className="text-center py-6 border-b border-brand-accent/50">
+            <div className="flex flex-col items-center gap-y-2 text-brand-secondary">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span className="text-xs md:text-sm">25 e 26 de Outubro</span>
+              </div>
+              <div className="flex items-center gap-2 whitespace-nowrap">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span className="text-xs md:text-sm">Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
+              </div>
+            </div>
+          </section>
+
+          <CardHeader className="text-center space-y-2 pt-6">
             <CardTitle className="text-3xl md:text-4xl text-brand-primary">
               Confirme sua Presença
             </CardTitle>
@@ -152,7 +156,7 @@ const Index = () => {
               Preencha os dados de todos os convidados que irão comparecer
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
                 <Label htmlFor="num-guests" className="text-base font-semibold text-brand-secondary">
@@ -205,7 +209,14 @@ const Index = () => {
             </form>
           </CardContent>
         </Card>
-      </main>
+      </div>
+      
+      {/* CORREÇÃO 3: Rodapé com novo texto */}
+      <footer className="text-center py-8 px-4">
+        <p className="text-sm text-brand-secondary/80">
+          Sistema desenvolvido por Madala
+        </p>
+      </footer>
     </div>
   );
 };
