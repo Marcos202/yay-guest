@@ -123,7 +123,6 @@ const Index = () => {
 
       <div className="container max-w-3xl mx-auto sm:py-8 md:py-12 px-0 sm:px-4">
         
-        {/* CORREÇÃO: Banner agora usa bg-cover para preencher o espaço, com altura ajustada */}
         <header
           className="relative w-full h-64 md:h-80 bg-cover bg-center sm:rounded-t-lg"
           style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
@@ -132,16 +131,11 @@ const Index = () => {
 
         <Card className="shadow-2xl bg-brand-card border-none rounded-none sm:rounded-b-lg">
           
+          {/* CORREÇÃO: Endereço removido, deixando apenas a data */}
           <section className="text-center py-6 border-b border-brand-accent/50">
-            <div className="flex flex-col items-center gap-y-2 text-brand-secondary">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span className="text-xs md:text-sm">25 e 26 de Outubro</span>
-              </div>
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span className="text-xs md:text-sm">Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
-              </div>
+            <div className="flex justify-center items-center gap-2 text-brand-secondary">
+              <Calendar className="h-4 w-4" />
+              <span className="text-xs md:text-sm">25 e 26 de Outubro</span>
             </div>
           </section>
 
