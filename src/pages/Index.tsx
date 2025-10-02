@@ -121,19 +121,15 @@ const Index = () => {
         </Button>
       </Link>
 
-      {/* CORREÇÃO 1: Nova imagem do banner */}
       <header
         className="relative w-full h-64 md:h-80 bg-cover bg-center"
         style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
         aria-label="Banner do Evento"
       />
       
-      {/* CORREÇÃO 2: Seção de informações com melhor responsividade */}
+      {/* CORREÇÃO 1: Título "Confirmação de Presença" removido */}
       <section className="container mx-auto text-center py-8 px-4">
-        <h1 className="text-3xl md:text-4xl font-bold text-brand-primary">
-          Confirmação de Presença
-        </h1>
-        <div className="mt-4 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-brand-secondary">
+        <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-brand-secondary">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             <span>25 e 26 de Outubro</span>
@@ -145,7 +141,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Formulário */}
       <main className="container max-w-3xl mx-auto px-4 pb-12">
         <Card className="shadow-2xl bg-brand-card border-none">
           <CardHeader className="text-center space-y-2">
@@ -167,7 +162,8 @@ const Index = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    {/* CORREÇÃO 2: Limite aumentado para 10 pessoas */}
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
                       <SelectItem key={num} value={num.toString()}>
                         {num} {num === 1 ? "pessoa" : "pessoas"}
                       </SelectItem>
@@ -194,7 +190,6 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      {/* CORREÇÃO 3: Adicionado "(opcional)" */}
                       <Label htmlFor={`whatsapp-${index}`}>WhatsApp (opcional)</Label>
                       <Input id={`whatsapp-${index}`} type="tel" placeholder="(00) 00000-0000" value={guest.whatsapp} onChange={(e) => handleGuestChange(index, "whatsapp", formatWhatsApp(e.target.value))} className="h-11" />
                     </div>
