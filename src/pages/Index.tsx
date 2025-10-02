@@ -47,7 +47,6 @@ const Index = () => {
       .slice(0, 15);
   };
 
-  // CORREÇÃO 3: WhatsApp não é mais obrigatório
   const isFormValid = () => {
     if (guests.length === 0) return false;
     return guests.every(
@@ -71,7 +70,6 @@ const Index = () => {
       const guestsData = guests.map((guest) => ({
         nome_completo: guest.nome_completo.trim(),
         idade: parseInt(guest.idade),
-        // Envia o whatsapp apenas se ele não estiver vazio
         whatsapp: guest.whatsapp.trim() || null,
       }));
 
@@ -123,26 +121,24 @@ const Index = () => {
         </Button>
       </Link>
 
-      {/* CORREÇÃO 1: Banner limpo, sem texto ou filtro */}
+      {/* CORREÇÃO 1: Nova imagem do banner */}
       <header
         className="relative w-full h-64 md:h-80 bg-cover bg-center"
-        style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-1152-x-768-px.jpg')" }}
+        style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
         aria-label="Banner do Evento"
-      >
-        {/* O conteúdo visual é a própria imagem de fundo */}
-      </header>
+      />
       
-      {/* CORREÇÃO 2: Nova seção de informações abaixo do banner */}
+      {/* CORREÇÃO 2: Seção de informações com melhor responsividade */}
       <section className="container mx-auto text-center py-8 px-4">
         <h1 className="text-3xl md:text-4xl font-bold text-brand-primary">
           Confirmação de Presença
         </h1>
-        <div className="mt-4 flex flex-col md:flex-row justify-center items-center gap-x-6 gap-y-2 text-brand-secondary">
+        <div className="mt-4 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-brand-secondary">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             <span>25 e 26 de Outubro</span>
           </div>
-          <div className="flex items-center gap-2 max-w-md">
+          <div className="flex items-center gap-2 text-center max-w-md">
             <MapPin className="h-5 w-5 flex-shrink-0" />
             <span>Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
           </div>
@@ -198,7 +194,8 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor={`whatsapp-${index}`}>WhatsApp</Label> {/* O asterisco de obrigatório foi removido */}
+                      {/* CORREÇÃO 3: Adicionado "(opcional)" */}
+                      <Label htmlFor={`whatsapp-${index}`}>WhatsApp (opcional)</Label>
                       <Input id={`whatsapp-${index}`} type="tel" placeholder="(00) 00000-0000" value={guest.whatsapp} onChange={(e) => handleGuestChange(index, "whatsapp", formatWhatsApp(e.target.value))} className="h-11" />
                     </div>
                   </div>
