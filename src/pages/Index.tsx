@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, User, Calendar, MapPin, LogIn } from "lucide-react";
+import { Check, User, Calendar, MapPin, LogIn, CalendarPlus } from "lucide-react";
+import Confetti from "react-confetti";
 
 interface Guest {
   nome_completo: string;
@@ -20,6 +21,16 @@ const Index = () => {
   const [guests, setGuests] = useState<Guest[]>([{ nome_completo: "", idade: "", whatsapp: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // Efeito para o confete
+  useEffect(() => {
+    if (isSuccess) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 6000); // Duração do confete
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess]);
 
   const handleNumGuestsChange = (value: string) => {
     const num = parseInt(value);
@@ -88,20 +99,41 @@ const Index = () => {
   };
 
   if (isSuccess) {
+    // CORREÇÃO: Página de sucesso interativa com confete e botões
+    const eventTitle = encodeURIComponent("Conferência Família Com Propósito");
+    const startDate = "20251025T220000Z"; // 25/Outubro às 19h (horário de Brasília, UTC-3)
+    const endDate = "20251027T010000Z";   // 26/Outubro às 22h (horário de Brasília, UTC-3)
+    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${startDate}/${endDate}`;
+
     return (
       <div className="min-h-screen bg-brand-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg shadow-2xl bg-brand-card">
-          <CardContent className="flex flex-col items-center justify-center py-16 px-6 space-y-6">
-            <div className="h-24 w-24 rounded-full bg-green-100 flex items-center justify-center">
-              <Check className="h-12 w-12 text-green-600" />
+        {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} recycle={false} />}
+        <Card className="w-full max-w-md shadow-xl bg-brand-card animate-in fade-in-50 zoom-in-95 duration-500">
+          <CardContent className="flex flex-col items-center justify-center p-8 sm:p-12 space-y-6">
+            <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+              <Check className="h-10 w-10 text-green-500" />
             </div>
             <div className="text-center space-y-2">
-              <h2 className="text-3xl md:text-4xl font-bold text-brand-primary">
+              <h2 className="text-2xl md:text-3xl font-bold text-brand-primary">
                 Presença Confirmada!
               </h2>
-              <p className="text-lg text-brand-secondary">
+              <p className="text-base text-brand-secondary">
                 Obrigado por confirmar. Aguardamos você no evento!
               </p>
+            </div>
+            <div className="w-full pt-4 space-y-3">
+              <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button className="w-full h-12 gap-2">
+                  <CalendarPlus className="h-5 w-5" />
+                  Agendar no Google Agenda
+                </Button>
+              </a>
+              <a href="https://share.google/xYbk3EKOcbgMfQ9YO" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button variant="outline" className="w-full h-12 gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Ver Localização
+                </Button>
+              </a>
             </div>
           </CardContent>
         </Card>
@@ -131,7 +163,6 @@ const Index = () => {
 
         <Card className="shadow-2xl bg-brand-card border-none rounded-none sm:rounded-b-lg">
           
-          {/* CORREÇÃO: Endereço removido, deixando apenas a data */}
           <section className="text-center py-6 border-b border-brand-accent/50">
             <div className="flex justify-center items-center gap-2 text-brand-secondary">
               <Calendar className="h-4 w-4" />
