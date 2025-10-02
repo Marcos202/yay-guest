@@ -16,7 +16,6 @@ interface Guest {
 }
 
 const Index = () => {
-  // CORREÇÃO 1: Formulário inicia com 1 convidado pré-selecionado.
   const [numGuests, setNumGuests] = useState<number>(1);
   const [guests, setGuests] = useState<Guest[]>([{ nome_completo: "", idade: "", whatsapp: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,7 +24,6 @@ const Index = () => {
   const handleNumGuestsChange = (value: string) => {
     const num = parseInt(value);
     setNumGuests(num);
-    // Atualiza a lista de convidados, mantendo os dados já preenchidos
     setGuests((currentGuests) => {
       const newGuests = [...currentGuests];
       while (newGuests.length < num) {
@@ -49,21 +47,21 @@ const Index = () => {
       .slice(0, 15);
   };
 
+  // CORREÇÃO 3: WhatsApp não é mais obrigatório
   const isFormValid = () => {
     if (guests.length === 0) return false;
     return guests.every(
       (guest) =>
         guest.nome_completo.trim().length >= 3 &&
         guest.idade.trim() !== "" &&
-        parseInt(guest.idade) > 0 &&
-        guest.whatsapp.replace(/\D/g, "").length >= 10 // Aceita 10 ou 11 dígitos
+        parseInt(guest.idade) > 0
     );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid()) {
-      toast.error("Por favor, preencha todos os campos corretamente.");
+      toast.error("Por favor, preencha o Nome e a Idade de todos os convidados.");
       return;
     }
 
@@ -73,7 +71,8 @@ const Index = () => {
       const guestsData = guests.map((guest) => ({
         nome_completo: guest.nome_completo.trim(),
         idade: parseInt(guest.idade),
-        whatsapp: guest.whatsapp,
+        // Envia o whatsapp apenas se ele não estiver vazio
+        whatsapp: guest.whatsapp.trim() || null,
       }));
 
       const { error } = await supabase.from("convidados").insert(guestsData);
@@ -124,31 +123,34 @@ const Index = () => {
         </Button>
       </Link>
 
-      {/* Banner do Evento */}
+      {/* CORREÇÃO 1: Banner limpo, sem texto ou filtro */}
       <header
-        className="relative w-full h-80 md:h-96 bg-cover bg-center flex flex-col items-center justify-center text-white text-center p-4"
+        className="relative w-full h-64 md:h-80 bg-cover bg-center"
         style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-1152-x-768-px.jpg')" }}
+        aria-label="Banner do Evento"
       >
-        <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
-        <div className="relative z-10 space-y-4">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight drop-shadow-md">
-            Confirmação de Presença
-          </h1>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-x-6 gap-y-2 text-lg opacity-90">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              <span>25 e 26 de Outubro</span>
-            </div>
-            <div className="flex items-center gap-2 max-w-md">
-              <MapPin className="h-5 w-5 flex-shrink-0" />
-              <span>Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
-            </div>
+        {/* O conteúdo visual é a própria imagem de fundo */}
+      </header>
+      
+      {/* CORREÇÃO 2: Nova seção de informações abaixo do banner */}
+      <section className="container mx-auto text-center py-8 px-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-brand-primary">
+          Confirmação de Presença
+        </h1>
+        <div className="mt-4 flex flex-col md:flex-row justify-center items-center gap-x-6 gap-y-2 text-brand-secondary">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            <span>25 e 26 de Outubro</span>
+          </div>
+          <div className="flex items-center gap-2 max-w-md">
+            <MapPin className="h-5 w-5 flex-shrink-0" />
+            <span>Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* Formulário */}
-      <main className="container max-w-3xl mx-auto px-4 pb-12 -mt-20 relative z-10">
+      <main className="container max-w-3xl mx-auto px-4 pb-12">
         <Card className="shadow-2xl bg-brand-card border-none">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-3xl md:text-4xl text-brand-primary">
@@ -196,8 +198,8 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor={`whatsapp-${index}`}>WhatsApp *</Label>
-                      <Input id={`whatsapp-${index}`} type="tel" placeholder="(00) 00000-0000" value={guest.whatsapp} onChange={(e) => handleGuestChange(index, "whatsapp", formatWhatsApp(e.target.value))} className="h-11" required />
+                      <Label htmlFor={`whatsapp-${index}`}>WhatsApp</Label> {/* O asterisco de obrigatório foi removido */}
+                      <Input id={`whatsapp-${index}`} type="tel" placeholder="(00) 00000-0000" value={guest.whatsapp} onChange={(e) => handleGuestChange(index, "whatsapp", formatWhatsApp(e.target.value))} className="h-11" />
                     </div>
                   </div>
                 ))}
