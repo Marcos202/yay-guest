@@ -20,21 +20,21 @@ export type Database = {
           id: string
           idade: number
           nome_completo: string
-          whatsapp: string
+          whatsapp: string | null
         }
         Insert: {
           data_confirmacao?: string
           id?: string
           idade: number
           nome_completo: string
-          whatsapp: string
+          whatsapp?: string | null
         }
         Update: {
           data_confirmacao?: string
           id?: string
           idade?: number
           nome_completo?: string
-          whatsapp?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
