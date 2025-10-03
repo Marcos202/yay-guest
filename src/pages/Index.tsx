@@ -23,11 +23,10 @@ const Index = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Efeito para o confete
   useEffect(() => {
     if (isSuccess) {
       setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 6000); // Duração do confete
+      const timer = setTimeout(() => setShowConfetti(false), 6000);
       return () => clearTimeout(timer);
     }
   }, [isSuccess]);
@@ -99,10 +98,9 @@ const Index = () => {
   };
 
   if (isSuccess) {
-    // CORREÇÃO: Página de sucesso interativa com confete e botões
     const eventTitle = encodeURIComponent("Conferência Família Com Propósito");
-    const startDate = "20251025T220000Z"; // 25/Outubro às 19h (horário de Brasília, UTC-3)
-    const endDate = "20251027T010000Z";   // 26/Outubro às 22h (horário de Brasília, UTC-3)
+    const startDate = "20251025T220000Z";
+    const endDate = "20251027T010000Z";
     const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${startDate}/${endDate}`;
 
     return (
@@ -121,19 +119,32 @@ const Index = () => {
                 Obrigado por confirmar. Aguardamos você no evento!
               </p>
             </div>
-            <div className="w-full pt-4 space-y-3">
+            {/* CORREÇÃO 2.A: Espaçamento dos botões aumentado (space-y-4) */}
+            <div className="w-full pt-4 space-y-4">
               <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full h-12 gap-2">
                   <CalendarPlus className="h-5 w-5" />
                   Agendar no Google Agenda
                 </Button>
               </a>
-              <a href="https://share.google/xYbk3EKOcbgMfQ9YO" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button variant="outline" className="w-full h-12 gap-2">
+              {/* CORREÇÃO 2.B e 2.C: Cor e link do botão de localização atualizados */}
+              <a href="https://share.google/YfZuyR1TSCPTp5z5M" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button className="w-full h-12 gap-2 bg-orange-500 text-white hover:bg-orange-600">
                   <MapPin className="h-5 w-5" />
                   Ver Localização
                 </Button>
               </a>
+            </div>
+            {/* CORREÇÃO 2.D: Informações do evento adicionadas */}
+            <div className="w-full text-center pt-6 mt-6 border-t border-brand-accent/50 space-y-2">
+              <div className="flex items-center justify-center gap-2 text-sm text-brand-secondary">
+                <Calendar className="h-4 w-4" />
+                <span>Data do evento: 25 e 26 De outubro</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 text-sm text-brand-secondary">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span>Endereço: Q. 107 Norte Alameda 111 - Ao lado do Capim Dourado Shopping</span>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -155,9 +166,10 @@ const Index = () => {
 
       <div className="container max-w-3xl mx-auto sm:py-8 md:py-12 px-0 sm:px-4">
         
+        {/* CORREÇÃO 1: Imagem do topo do formulário substituída */}
         <header
           className="relative w-full h-64 md:h-80 bg-cover bg-center sm:rounded-t-lg"
-          style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/Post-800-x-700-px.png')" }}
+          style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/imagem-topo-1.jpg')" }}
           aria-label="Banner do Evento"
         />
 
