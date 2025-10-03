@@ -119,15 +119,14 @@ const Index = () => {
                 Obrigado por confirmar. Aguardamos você no evento!
               </p>
             </div>
-            {/* CORREÇÃO 2.A: Espaçamento dos botões aumentado (space-y-4) */}
-            <div className="w-full pt-4 space-y-4">
+            {/* CORREÇÃO: Espaçamento dos botões corrigido com flexbox e gap */}
+            <div className="w-full pt-4 flex flex-col gap-3">
               <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full h-12 gap-2">
                   <CalendarPlus className="h-5 w-5" />
                   Agendar no Google Agenda
                 </Button>
               </a>
-              {/* CORREÇÃO 2.B e 2.C: Cor e link do botão de localização atualizados */}
               <a href="https://share.google/YfZuyR1TSCPTp5z5M" target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full h-12 gap-2 bg-orange-500 text-white hover:bg-orange-600">
                   <MapPin className="h-5 w-5" />
@@ -135,7 +134,6 @@ const Index = () => {
                 </Button>
               </a>
             </div>
-            {/* CORREÇÃO 2.D: Informações do evento adicionadas */}
             <div className="w-full text-center pt-6 mt-6 border-t border-brand-accent/50 space-y-2">
               <div className="flex items-center justify-center gap-2 text-sm text-brand-secondary">
                 <Calendar className="h-4 w-4" />
@@ -166,7 +164,6 @@ const Index = () => {
 
       <div className="container max-w-3xl mx-auto sm:py-8 md:py-12 px-0 sm:px-4">
         
-        {/* CORREÇÃO 1: Imagem do topo do formulário substituída */}
         <header
           className="relative w-full h-64 md:h-80 bg-cover bg-center sm:rounded-t-lg"
           style={{ backgroundImage: "url('https://podtocantins.com/wp-content/uploads/2025/10/imagem-topo-1.jpg')" }}
