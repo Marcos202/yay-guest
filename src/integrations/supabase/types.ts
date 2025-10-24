@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      campanhas: {
+        Row: {
+          agendamento: string | null
+          created_at: string
+          id: string
+          intervalo_max: number | null
+          intervalo_min: number | null
+          mensagem_template: string
+          modo: string
+          nome: string
+          status: string | null
+          taxa_por_minuto: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agendamento?: string | null
+          created_at?: string
+          id?: string
+          intervalo_max?: number | null
+          intervalo_min?: number | null
+          mensagem_template: string
+          modo: string
+          nome: string
+          status?: string | null
+          taxa_por_minuto?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agendamento?: string | null
+          created_at?: string
+          id?: string
+          intervalo_max?: number | null
+          intervalo_min?: number | null
+          mensagem_template?: string
+          modo?: string
+          nome?: string
+          status?: string | null
+          taxa_por_minuto?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      contatos: {
+        Row: {
+          campanha_id: string
+          created_at: string
+          id: string
+          nome: string
+          observacao: string | null
+          telefone: string
+        }
+        Insert: {
+          campanha_id: string
+          created_at?: string
+          id?: string
+          nome: string
+          observacao?: string | null
+          telefone: string
+        }
+        Update: {
+          campanha_id?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          observacao?: string | null
+          telefone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contatos_campanha_id_fkey"
+            columns: ["campanha_id"]
+            isOneToOne: false
+            referencedRelation: "campanhas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       convidados: {
         Row: {
           data_confirmacao: string
@@ -38,6 +118,75 @@ export type Database = {
         }
         Relationships: []
       }
+      envios_whatsapp: {
+        Row: {
+          campanha_id: string
+          contato_id: string
+          created_at: string
+          erro_mensagem: string | null
+          id: string
+          mensagem_enviada: string | null
+          status: string
+          timestamp_envio: string | null
+        }
+        Insert: {
+          campanha_id: string
+          contato_id: string
+          created_at?: string
+          erro_mensagem?: string | null
+          id?: string
+          mensagem_enviada?: string | null
+          status: string
+          timestamp_envio?: string | null
+        }
+        Update: {
+          campanha_id?: string
+          contato_id?: string
+          created_at?: string
+          erro_mensagem?: string | null
+          id?: string
+          mensagem_enviada?: string | null
+          status?: string
+          timestamp_envio?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "envios_whatsapp_campanha_id_fkey"
+            columns: ["campanha_id"]
+            isOneToOne: false
+            referencedRelation: "campanhas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "envios_whatsapp_contato_id_fkey"
+            columns: ["contato_id"]
+            isOneToOne: false
+            referencedRelation: "contatos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      optouts_whatsapp: {
+        Row: {
+          created_at: string
+          id: string
+          motivo: string | null
+          telefone: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          telefone: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          telefone?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -53,6 +202,39 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          qr_code: string | null
+          session_data: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          qr_code?: string | null
+          session_data?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          qr_code?: string | null
+          session_data?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

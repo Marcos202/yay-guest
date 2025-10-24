@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, User, Calendar, MapPin, LogIn, CalendarPlus } from "lucide-react";
+import { Check, User, Calendar, MapPin, LogIn, CalendarPlus, MessageCircle } from "lucide-react";
 import Confetti from "react-confetti";
 
 interface Guest {
@@ -152,15 +152,26 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-brand-background">
-      <Link to="/auth" aria-label="Painel do Administrador">
-        <Button 
-          variant="ghost" 
-          className="absolute top-4 right-4 z-20 gap-2 text-white bg-black/20 backdrop-blur-sm hover:bg-white/20 hover:text-white"
-        >
-          <LogIn className="h-4 w-4" />
-          <span className="hidden sm:inline">Admin</span>
-        </Button>
-      </Link>
+      <div className="absolute top-4 right-4 z-20 flex gap-2">
+        <Link to="/whatsapp-sender" aria-label="WhatsApp Sender">
+          <Button 
+            variant="ghost" 
+            className="gap-2 text-white bg-green-600/80 backdrop-blur-sm hover:bg-green-600 hover:text-white"
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span className="hidden sm:inline">WhatsApp</span>
+          </Button>
+        </Link>
+        <Link to="/auth" aria-label="Painel do Administrador">
+          <Button 
+            variant="ghost" 
+            className="gap-2 text-white bg-black/20 backdrop-blur-sm hover:bg-white/20 hover:text-white"
+          >
+            <LogIn className="h-4 w-4" />
+            <span className="hidden sm:inline">Admin</span>
+          </Button>
+        </Link>
+      </div>
 
       <div className="container max-w-3xl mx-auto sm:py-8 md:py-12 px-0 sm:px-4">
         
